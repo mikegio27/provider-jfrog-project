@@ -7,11 +7,15 @@
 set -euo pipefail
 
 UPJET_VERSION="v2.2.1-0.20260414070754-c6d5213346ac"
+
+# Ensure the module is present in the cache before we try to patch it.
+go mod download github.com/crossplane/upjet/v2@"${UPJET_VERSION}" 2>/dev/null || true
+
 COMMON_GO="$(go env GOMODCACHE)/github.com/crossplane/upjet/v2@${UPJET_VERSION}/pkg/config/common.go"
 
 if [ ! -f "${COMMON_GO}" ]; then
-    echo "upjet common.go not found, skipping patch (module not yet downloaded)"
-    exit 0
+    echo "upjet common.go not found at ${COMMON_GO}, cannot patch"
+    exit 1
 fi
 
 if grep -q 'if len(words) < 2' "${COMMON_GO}"; then
