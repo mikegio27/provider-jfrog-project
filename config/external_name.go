@@ -7,17 +7,35 @@ import (
 // ExternalNameConfigs contains all external name configurations for this
 // provider.
 var ExternalNameConfigs = map[string]config.ExternalName{
-	// Import requires using a randomly generated ID from provider: nl-2e21sda
-	"null_resource": idWithStub(),
-}
+	// project is imported by its key: terraform import project.myproject myproj
+	"project": config.ParameterAsIdentifier("key"),
 
-func idWithStub() config.ExternalName {
-	e := config.IdentifierFromProvider
-	e.GetExternalNameFn = func(tfstate map[string]any) (string, error) {
-		en, _ := config.IDAsExternalName(tfstate)
-		return en, nil
-	}
-	return e
+	// project_environment is imported as project_key:environment_name
+	"project_environment": config.TemplatedStringAsIdentifier("name",
+		"{{ .parameters.project_key }}:{{ .external_name }}"),
+
+	// project_group is imported as project_key:group_name
+	"project_group": config.TemplatedStringAsIdentifier("name",
+		"{{ .parameters.project_key }}:{{ .external_name }}"),
+
+	// project_repository is imported as project_key:repository_key
+	"project_repository": config.TemplatedStringAsIdentifier("key",
+		"{{ .parameters.project_key }}:{{ .external_name }}"),
+
+	// project_role is imported as project_key:role_name
+	"project_role": config.TemplatedStringAsIdentifier("name",
+		"{{ .parameters.project_key }}:{{ .external_name }}"),
+
+	// project_share_repository is imported as repo_key:target_project_key
+	"project_share_repository": config.TemplatedStringAsIdentifier("repo_key",
+		"{{ .external_name }}:{{ .parameters.target_project_key }}"),
+
+	// project_share_repository_with_all is imported by its repo_key
+	"project_share_repository_with_all": config.ParameterAsIdentifier("repo_key"),
+
+	// project_user is imported as project_key:username
+	"project_user": config.TemplatedStringAsIdentifier("name",
+		"{{ .parameters.project_key }}:{{ .external_name }}"),
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

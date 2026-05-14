@@ -1,0 +1,13 @@
+apiVersion: project.jfrog.com/v1alpha1
+kind: Repository
+metadata:
+  annotations:
+    meta.upbound.io/example-id: project/v1alpha1/repository
+  labels:
+    testing.upbound.io/example-name: myprojectrepo
+  name: myprojectrepo
+spec:
+  forProvider:
+    projectKeySelector:
+      matchLabels:
+        testing.upbound.io/example-name: example

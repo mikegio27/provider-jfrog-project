@@ -1,0 +1,19 @@
+apiVersion: project.jfrog.com/v1alpha1
+kind: Role
+metadata:
+  annotations:
+    meta.upbound.io/example-id: project/v1alpha1/role
+  labels:
+    testing.upbound.io/example-name: myrole
+  name: myrole
+spec:
+  forProvider:
+    actions:
+    - READ_REPOSITORY
+    - ANNOTATE_REPOSITORY
+    environments:
+    - DEV
+    projectKeySelector:
+      matchLabels:
+        testing.upbound.io/example-name: myproject
+    type: CUSTOM

@@ -1,40 +1,210 @@
-name: hashicorp/null
+name: jfrog/project
 resources:
-    null_resource:
+    project:
         subCategory: ""
-        description: The null_resource resource implements the standard resource lifecycle but takes no further action. On Terraform 1.4 and later, use the terraform_data resource type https://developer.hashicorp.com/terraform/language/resources/terraform-data instead. Terraform 1.9 and later support the moved configuration block from null_resource to terraform_data. The triggers argument allows specifying an arbitrary set of values that, when changed, will cause the resource to be replaced.
-        name: null_resource
-        title: null_resource Resource - terraform-provider-null
+        description: 'Provides an Artifactory project resource. This can be used to create and manage Artifactory project, maintain users/groups/roles/repos. Repository Configuration After the project configuration is applied with repos attribute set, the repository''s attributes project_key and project_environments would be updated with the project''s data. This will generate a state drift in the next Terraform plan/apply for the repository resource. To avoid this, apply lifecycle.ignore_changes:'
+        name: project
+        title: project Resource - terraform-provider-project
         examples:
-            - name: cluster
+            - name: myproject
               manifest: |-
                 {
-                  "connection": [
+                  "admin_privileges": [
                     {
-                      "host": "${element(aws_instance.cluster[*].public_ip, 0)}"
+                      "index_resources": true,
+                      "manage_members": true,
+                      "manage_remote_repository": true,
+                      "manage_resources": true
                     }
                   ],
-                  "provisioner": {
-                    "remote-exec": [
-                      {
-                        "inline": [
-                          "bootstrap-cluster.sh ${join(\" \",\n      aws_instance.cluster[*].private_ip)}"
-                        ]
-                      }
-                    ]
-                  },
-                  "triggers": {
-                    "cluster_instance_ids": "${join(\",\", aws_instance.cluster[*].id)}"
-                  }
+                  "block_deployments_on_limit": false,
+                  "description": "My Project",
+                  "display_name": "My Project",
+                  "email_notification": true,
+                  "key": "myproj",
+                  "max_storage_in_gibibytes": 10
                 }
-              dependencies:
-                aws_instance.cluster: |-
-                    {
-                      "ami": "ami-0dcc1e21636832c5d",
-                      "count": 3,
-                      "instance_type": "m5.large"
-                    }
         argumentDocs:
-            id: (String) This is set to a random value at create time.
-            triggers: (Map of String) A map of arbitrary strings that, when changed, will force the null resource to be replaced, re-running any associated provisioners.
-        importStatements: []
+            actions: (Set of String) List of pre-defined actions (READ_REPOSITORY, ANNOTATE_REPOSITORY, DEPLOY_CACHE_REPOSITORY, DELETE_OVERWRITE_REPOSITORY, MANAGE_XRAY_MD_REPOSITORY, READ_RELEASE_BUNDLE, ANNOTATE_RELEASE_BUNDLE, CREATE_RELEASE_BUNDLE, DISTRIBUTE_RELEASE_BUNDLE, DELETE_RELEASE_BUNDLE, MANAGE_XRAY_MD_RELEASE_BUNDLE, READ_BUILD, ANNOTATE_BUILD, DEPLOY_BUILD, DELETE_BUILD, MANAGE_XRAY_MD_BUILD, READ_SOURCES_PIPELINE, TRIGGER_PIPELINE, READ_INTEGRATIONS_PIPELINE, READ_POOLS_PIPELINE, MANAGE_INTEGRATIONS_PIPELINE, MANAGE_SOURCES_PIPELINE, MANAGE_POOLS_PIPELINE, TRIGGER_SECURITY, ISSUES_SECURITY, LICENCES_SECURITY, REPORTS_SECURITY, WATCHES_SECURITY, POLICIES_SECURITY, RULES_SECURITY, MANAGE_MEMBERS, MANAGE_RESOURCES)
+            admin_privileges: (Block Set) (see below for nested schema)
+            block_deployments_on_limit: (Boolean) Block deployment of artifacts if storage quota is exceeded.
+            description: (String)
+            display_name: (String) Also known as project name on the UI
+            email_notification: (Boolean) Alerts will be sent when reaching 75% and 95% of the storage quota. This serves as a notification only and is not a blocker
+            environments: (Set of String) A repository can be available in different environments. Members with roles defined in the set environment will have access to the repository. List of pre-defined environments (DEV, PROD)
+            group: (Block Set, Deprecated) Project group. Element has one to one mapping with the JFrog Project Groups API (see below for nested schema)
+            id: (String) The ID of this resource.
+            index_resources: (Boolean) Enables a project admin to define the resources to be indexed by Xray
+            key: '(String) The Project Key is added as a prefix to resources created within a Project. This field is mandatory and supports only 2 - 32 lowercase alphanumeric and hyphen characters. Must begin with a letter. For example: us1a-test.'
+            manage_members: (Boolean) Allows the Project Admin to manage Platform users/groups as project members with different roles.
+            manage_remote_repository: (Boolean) Allows the Project Admin to create and manage remote repositories. Requires manage_resources to be enabled. Available in Artifactory 7.134 and later.
+            manage_resources: (Boolean) Allows the Project Admin to manage resources - repositories, builds and Pipelines resources on the project level.
+            max_storage_in_gibibytes: (Number) Storage quota in GiB. Must be 1 or larger. Set to -1 for unlimited storage. This is translated to binary bytes for Artifactory API. So for a 1TB quota, this should be set to 1024 (vs 1000) which will translate to 1099511627776 bytes for the API.
+            member: (Block Set, Deprecated) Member of the project. Element has one to one mapping with the JFrog Project Users API. (see below for nested schema)
+            name: (String) Must be existing Artifactory group
+            repos: (Set of String, Deprecated) (Optional) List of existing repo keys to be assigned to the project. If you wish to use the alternate method of setting project_key attribute in each artifactory_*_repository resource in the artifactory provider, you will need to use lifecycle.ignore_changes in the project resource to avoid state drift.
+            role: (Block Set, Deprecated) Project role. Element has one to one mapping with the JFrog Project Roles API (see below for nested schema)
+            roles: (Set of String) List of pre-defined Project or custom roles
+            type: (String) Type of role. Only "CUSTOM" is supported
+            use_project_group_resource: (Boolean) When set to true, this resource will ignore the group attributes and allow users to be managed by project_group resource instead. Default to true.
+            use_project_repository_resource: (Boolean) When set to true, this resource will ignore the repos attributes and allow repository to be managed by project_repository resource instead. Default to true.
+            use_project_role_resource: (Boolean) When set to true, this resource will ignore the roles attributes and allow roles to be managed by project_role resource instead. Default to true.
+            use_project_user_resource: (Boolean) When set to true, this resource will ignore the member attributes and allow users to be managed by project_user resource instead. Default to true.
+        importStatements:
+            - terraform import project.myproject myproj
+    project_environment:
+        subCategory: ""
+        description: Creates a new environment for the specified project. ~>The combined length of project_key and name (separated by '-') cannot not exceeds 32 characters.
+        name: project_environment
+        title: project_environment Resource - terraform-provider-project
+        examples:
+            - name: myenv
+              manifest: |-
+                {
+                  "name": "myenv",
+                  "project_key": "myproj"
+                }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            name: (String) Environment name. Must start with a letter and can contain letters, digits and - character.
+            project_key: (String) Project key for this environment. This field supports only 2 - 32 lowercase alphanumeric and hyphen characters. Must begin with a letter.
+        importStatements:
+            - terraform import project_environment.myenv project_key:environment_name
+    project_group:
+        subCategory: ""
+        description: Add a group as project member. Element has one to one mapping with the JFrog Project Groups API https://jfrog.com/help/r/jfrog-rest-apis/update-group-in-project. Requires a user assigned with the 'Administer the Platform' role or Project Admin permissions if admin_privileges.manage_resoures is enabled.
+        name: project_group
+        title: project_group Resource - terraform-provider-project
+        examples:
+            - name: mygroup
+              manifest: |-
+                {
+                  "name": "mygroup",
+                  "project_key": "myproj",
+                  "roles": [
+                    "Viewer"
+                  ]
+                }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            name: (String) The name of an artifactory group.
+            project_key: (String) The key of the project to which the group should be assigned to.
+            roles: (Set of String) List of pre-defined Project or custom roles. Must have at least 1 role, e.g. 'Viewer'
+        importStatements:
+            - terraform import project_group.mygroup project_key:groupname
+    project_repository:
+        subCategory: ""
+        description: Assign a repository to a project. Requires a user assigned with the 'Administer the Platform' role or Project Admin permissions if admin_privileges.manage_resoures is enabled.
+        name: project_repository
+        title: project_repository Resource - terraform-provider-project
+        examples:
+            - name: myprojectrepo
+              manifest: |-
+                {
+                  "key": "my-generic-local",
+                  "project_key": "myproj"
+                }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            key: (String) The key of the repository.
+            project_key: (String) The key of the project to which the repository should be assigned to.
+        importStatements:
+            - terraform import project_repository.myprojectrepo project_key:repository_key
+    project_role:
+        subCategory: ""
+        description: Create a project role. Element has one to one mapping with the JFrog Project Roles API https://www.jfrog.com/confluence/display/JFROG/Artifactory+REST+API#ArtifactoryRESTAPI-AddaNewRole. Requires a user assigned with the 'Administer the Platform' role or Project Admin permissions if admin_privileges.manage_resoures is enabled.
+        name: project_role
+        title: project_role Resource - terraform-provider-project
+        examples:
+            - name: myrole
+              manifest: |-
+                {
+                  "actions": [
+                    "READ_REPOSITORY",
+                    "ANNOTATE_REPOSITORY"
+                  ],
+                  "environments": [
+                    "DEV"
+                  ],
+                  "name": "myrole",
+                  "project_key": "${project.myproject.key}",
+                  "type": "CUSTOM"
+                }
+              references:
+                project_key: project.myproject.key
+        argumentDocs:
+            actions: (Set of String) List of pre-defined actions (READ_REPOSITORY, ANNOTATE_REPOSITORY, DEPLOY_CACHE_REPOSITORY, DELETE_OVERWRITE_REPOSITORY, MANAGE_XRAY_MD_REPOSITORY, READ_RELEASE_BUNDLE, ANNOTATE_RELEASE_BUNDLE, CREATE_RELEASE_BUNDLE, DISTRIBUTE_RELEASE_BUNDLE, DELETE_RELEASE_BUNDLE, MANAGE_XRAY_MD_RELEASE_BUNDLE, READ_BUILD, ANNOTATE_BUILD, DEPLOY_BUILD, DELETE_BUILD, MANAGE_XRAY_MD_BUILD, READ_SOURCES_PIPELINE, TRIGGER_PIPELINE, READ_INTEGRATIONS_PIPELINE, READ_POOLS_PIPELINE, MANAGE_INTEGRATIONS_PIPELINE, MANAGE_SOURCES_PIPELINE, MANAGE_POOLS_PIPELINE, TRIGGER_SECURITY, ISSUES_SECURITY, LICENCES_SECURITY, REPORTS_SECURITY, WATCHES_SECURITY, POLICIES_SECURITY, RULES_SECURITY, MANAGE_MEMBERS, MANAGE_RESOURCES)
+            environments: (Set of String) A repository can be available in different environments. Members with roles defined in the set environment will have access to the repository. List of pre-defined environments (DEV, PROD)
+            id: (String) The ID of this resource.
+            name: (String)
+            project_key: (String) Project key for this environment. This field supports only 2 - 32 lowercase alphanumeric and hyphen characters. Must begin with a letter.
+            type: (String) Type of role. Only "CUSTOM" is supported
+        importStatements:
+            - terraform import project_role.myrole project_key:role_name
+    project_share_repository:
+        subCategory: ""
+        description: Share a local or remote repository with a list of projects. Project Members of the target project are granted actions to the shared repository according to their Roles and Role actions assigned in the target Project. Requires a user assigned with the 'Administer the Platform' role. ->Only available for Artifactory 7.90.1 or later.
+        name: project_share_repository
+        title: project_share_repository Resource - terraform-provider-project
+        examples:
+            - name: myprojectsharerepo
+              manifest: |-
+                {
+                  "repo_key": "myrepo-generic-local",
+                  "target_project_key": "myproj"
+                }
+            - name: share_repo
+              manifest: |-
+                {
+                  "count": 3,
+                  "read_only": true,
+                  "repo_key": "${artifactory_local_generic_repository.repo.key}",
+                  "target_project_key": "${element(\n    [\n      project.project_name_1.key,\n      project.project_name_2.key,\n      project.project_name_3.key\n    ],\n    count.index\n  )}"
+                }
+              references:
+                repo_key: artifactory_local_generic_repository.repo.key
+        argumentDocs:
+            read_only: (Boolean) Share repository with a Project in Read-Only mode to avoid any changes or modifications of the shared content.
+            repo_key: (String) The key of the repository.
+            target_project_key: (String) The project key to which the repository should be shared with.
+        importStatements:
+            - terraform import project_share_repository.myprojectsharerepo repo_key:project_key
+    project_share_repository_with_all:
+        subCategory: ""
+        description: Share a local or remote repository with all projects. Project Members of the target project are granted actions to the shared repository according to their Roles and Role actions assigned in the target Project. Requires a user assigned with the 'Administer the Platform' role. ->Only available for Artifactory 7.90.1 or later.
+        name: project_share_repository_with_all
+        title: project_share_repository_with_all Resource - terraform-provider-project
+        examples:
+            - name: myprojectsharerepo
+              manifest: |-
+                {
+                  "repo_key": "myrepo-generic-local"
+                }
+        argumentDocs:
+            read_only: (Boolean) Share repository with all Projects in Read-Only mode to avoid any changes or modifications of the shared content.
+            repo_key: (String) The key of the repository.
+        importStatements:
+            - terraform import project_share_repository_with_all.myprojectsharerepo repo_key
+    project_user:
+        subCategory: ""
+        description: Add a user as project member. Element has one to one mapping with the JFrog Project Users API https://jfrog.com/help/r/jfrog-rest-apis/add-or-update-user-in-project. Requires a user assigned with the 'Administer the Platform' role or Project Admin permissions if admin_privileges.manage_resoures is enabled.
+        name: project_user
+        title: project_user Resource - terraform-provider-project
+        examples:
+            - name: myuser
+              manifest: |-
+                {
+                  "name": "myuser",
+                  "project_key": "myproj",
+                  "roles": [
+                    "Viewer"
+                  ]
+                }
+        argumentDocs:
+            id: (String) The ID of this resource.
+            ignore_missing_user: (Boolean) When set to true, the resource will not fail if the user does not exist. Default to false. This is useful when the user is externally managed and the local account wasn't created yet.
+            name: (String) The name of an artifactory user.
+            project_key: (String) The key of the project to which the user should be assigned to.
+            roles: (Set of String) List of pre-defined Project or custom roles. Must have at least 1 role, e.g. 'Viewer'
+        importStatements:
+            - terraform import project_user.myuser project_key:username

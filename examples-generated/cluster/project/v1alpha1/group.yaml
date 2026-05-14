@@ -1,0 +1,15 @@
+apiVersion: project.jfrog.com/v1alpha1
+kind: Group
+metadata:
+  annotations:
+    meta.upbound.io/example-id: project/v1alpha1/group
+  labels:
+    testing.upbound.io/example-name: mygroup
+  name: mygroup
+spec:
+  forProvider:
+    projectKeySelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    roles:
+    - Viewer
