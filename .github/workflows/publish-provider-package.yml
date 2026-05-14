@@ -54,11 +54,8 @@ jobs:
           curl -sL "https://raw.githubusercontent.com/crossplane/crossplane/master/install.sh" | sh
           sudo mv crossplane /usr/local/bin/
 
-      - name: Build provider binaries
-        run: make build VERSION=${{ github.event.inputs.version }} PLATFORMS="linux_amd64 linux_arm64"
-
-      - name: Build xpkg
-        run: make xpkg.build VERSION=${{ github.event.inputs.version }} XPKG_REG_ORGS=ghcr.io/mikegio27 PLATFORMS="linux_amd64 linux_arm64"
+      - name: Build provider binaries and xpkg
+        run: make build.all VERSION=${{ github.event.inputs.version }} PLATFORMS="linux_amd64 linux_arm64"
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
