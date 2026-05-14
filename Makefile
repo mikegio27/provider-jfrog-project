@@ -136,9 +136,14 @@ pull-docs:
 	fi
 	@git -C "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" sparse-checkout set "$(TERRAFORM_DOCS_PATH)"
 
-generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
+generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs patch-upjet
 
-.PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs check-terraform-version
+patch-upjet:
+	@$(INFO) patching upjet for single-word resource name support
+	@hack/patch-upjet.sh
+	@$(OK) patching upjet
+
+.PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs check-terraform-version patch-upjet
 # ====================================================================================
 # Targets
 
