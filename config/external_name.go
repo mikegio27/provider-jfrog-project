@@ -7,9 +7,6 @@ import (
 // ExternalNameConfigs contains all external name configurations for this
 // provider.
 var ExternalNameConfigs = map[string]config.ExternalName{
-	// project is imported by its key: terraform import project.myproject myproj
-	"project": config.ParameterAsIdentifier("key"),
-
 	// project_environment is imported as project_key:environment_name
 	"project_environment": config.TemplatedStringAsIdentifier("name",
 		"{{ .parameters.project_key }}:{{ .external_name }}"),

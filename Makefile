@@ -99,7 +99,7 @@ xpkg.build.provider-jfrog-project: do.build.images
 
 # NOTE(hasheddan): we ensure up is installed prior to running platform-specific
 # build steps in parallel to avoid encountering an installation race condition.
-build.init: $(UP) $(CROSSPLANE_CLI) check-terraform-version patch-upjet
+build.init: $(UP) $(CROSSPLANE_CLI) check-terraform-version
 
 # ====================================================================================
 # Setup Terraform for fetching provider schema
@@ -136,14 +136,9 @@ pull-docs:
 	fi
 	@git -C "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" sparse-checkout set "$(TERRAFORM_DOCS_PATH)"
 
-generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs patch-upjet
+generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
 
-patch-upjet:
-	@$(INFO) patching upjet for single-word resource name support
-	@hack/patch-upjet.sh
-	@$(OK) patching upjet
-
-.PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs check-terraform-version patch-upjet
+.PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs check-terraform-version
 # ====================================================================================
 # Targets
 

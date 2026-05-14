@@ -13,9 +13,6 @@ func (tr *Environment) Hub() {}
 func (tr *Group) Hub() {}
 
 // Hub marks this type as a conversion hub.
-func (tr *Project) Hub() {}
-
-// Hub marks this type as a conversion hub.
 func (tr *Repository) Hub() {}
 
 // Hub marks this type as a conversion hub.

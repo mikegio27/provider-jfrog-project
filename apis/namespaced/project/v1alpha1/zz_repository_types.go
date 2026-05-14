@@ -31,17 +31,8 @@ type RepositoryParameters struct {
 
 	// (String) The key of the project to which the repository should be assigned to.
 	// The key of the project to which the repository should be assigned to.
-	// +crossplane:generate:reference:type=github.com/mikegio27/provider-jfrog-project/apis/namespaced/project/v1alpha1.Project
-	// +kubebuilder:validation:Optional
-	ProjectKey *string `json:"projectKey,omitempty" tf:"project_key,omitempty"`
-
-	// Reference to a Project in project to populate projectKey.
-	// +kubebuilder:validation:Optional
-	ProjectKeyRef *v1.NamespacedReference `json:"projectKeyRef,omitempty" tf:"-"`
-
-	// Selector for a Project in project to populate projectKey.
-	// +kubebuilder:validation:Optional
-	ProjectKeySelector *v1.NamespacedSelector `json:"projectKeySelector,omitempty" tf:"-"`
+	// +kubebuilder:validation:Required
+	ProjectKey *string `json:"projectKey" tf:"project_key,omitempty"`
 }
 
 // RepositorySpec defines the desired state of Repository

@@ -14,7 +14,5 @@ spec:
     - ANNOTATE_REPOSITORY
     environments:
     - DEV
-    projectKeySelector:
-      matchLabels:
-        testing.upbound.io/example-name: myproject
+    projectKey: ${project.myproject.key}
     type: CUSTOM
