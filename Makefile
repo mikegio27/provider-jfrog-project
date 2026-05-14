@@ -138,7 +138,20 @@ pull-docs:
 
 generate.init: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs
 
-.PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs check-terraform-version
+# If a previous CI run patched upjet directly in the module cache, the cache
+# entry will have writable files (we chmod +w before patching). go mod verify
+# fails on modified modules, so detect and evict the dirty entry before verify.
+go.modules.check: evict-dirty-module-cache
+
+evict-dirty-module-cache:
+	@UPJET_DIR="$$(go env GOMODCACHE)/github.com/crossplane/upjet/v2@v2.2.1-0.20260414070754-c6d5213346ac"; \
+	if [ -f "$$UPJET_DIR/pkg/config/common.go" ] && [ -w "$$UPJET_DIR/pkg/config/common.go" ]; then \
+		echo "Evicting modified upjet module cache entry"; \
+		chmod -R +w "$$UPJET_DIR"; \
+		rm -rf "$$UPJET_DIR"; \
+	fi
+
+.PHONY: $(TERRAFORM_PROVIDER_SCHEMA) pull-docs check-terraform-version evict-dirty-module-cache
 # ====================================================================================
 # Targets
 
