@@ -9,7 +9,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "jfrog-project.jfrog.com"
+	Group   = "jfrogproject.jfrog.com"
 	Version = "v1beta1"
 )
 

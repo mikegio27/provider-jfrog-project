@@ -11,7 +11,7 @@ spec:
     categories:
     - crossplane
     - managed
-    - jfrog-project
+    - jfrogproject
     kind: Role
     listKind: RoleList
     plural: roles
