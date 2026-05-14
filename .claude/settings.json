@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:registry.terraform.io)",
+      "Bash(gh api *)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(git -C /home/dozy/repos/crossplane/jfrog-projects show HEAD:config/provider.go)",
+      "Bash(git -C /home/dozy/repos/crossplane/jfrog-projects show HEAD --name-only --stat)",
+      "Bash(git -C /home/dozy/repos/crossplane/jfrog-projects show HEAD:config/cluster/null/config.go)",
+      "Bash(find /root/go /home/dozy/go -path \"*/crossplane/upjet/v2/pkg/config/*.go\" 2>/dev/null | head -20 || find /home/dozy -path \"*/upjet/v2/pkg/config\" -type d 2>/dev/null | head -5)",
+      "Read(//root/**)",
+      "Read(//home/dozy/**)",
+      "Bash(mkdir -p .work/jfrog/project)",
+      "Bash(git clone *)",
+      "Bash(git -C /home/dozy/repos/crossplane/jfrog-projects/.work/jfrog/project sparse-checkout set \"docs/resources\")",
+      "Bash(go run *)",
+      "Bash(cp /tmp/tf-jfrog-schema/schema.json /home/dozy/repos/crossplane/jfrog-projects/config/schema.json && echo \"schema.json updated\")",
+      "Bash(go build *)"
+    ],
+    "additionalDirectories": [
+      "/tmp/tf-jfrog-schema"
+    ]
+  }
+}

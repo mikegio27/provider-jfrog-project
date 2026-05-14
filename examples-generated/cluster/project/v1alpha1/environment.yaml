@@ -1,0 +1,13 @@
+apiVersion: project.jfrog.com/v1alpha1
+kind: Environment
+metadata:
+  annotations:
+    meta.upbound.io/example-id: project/v1alpha1/environment
+  labels:
+    testing.upbound.io/example-name: myenv
+  name: myenv
+spec:
+  forProvider:
+    projectKeySelector:
+      matchLabels:
+        testing.upbound.io/example-name: example

@@ -9,15 +9,29 @@ import (
 
 	"github.com/crossplane/upjet/v2/pkg/controller"
 
-	resource "github.com/crossplane/upjet-provider-template/internal/controller/namespaced/null/resource"
-	providerconfig "github.com/crossplane/upjet-provider-template/internal/controller/namespaced/providerconfig"
+	environment "github.com/mikegio27/provider-jfrog-project/internal/controller/namespaced/project/environment"
+	group "github.com/mikegio27/provider-jfrog-project/internal/controller/namespaced/project/group"
+	project "github.com/mikegio27/provider-jfrog-project/internal/controller/namespaced/project/project"
+	repository "github.com/mikegio27/provider-jfrog-project/internal/controller/namespaced/project/repository"
+	role "github.com/mikegio27/provider-jfrog-project/internal/controller/namespaced/project/role"
+	sharerepository "github.com/mikegio27/provider-jfrog-project/internal/controller/namespaced/project/sharerepository"
+	sharerepositorywithall "github.com/mikegio27/provider-jfrog-project/internal/controller/namespaced/project/sharerepositorywithall"
+	user "github.com/mikegio27/provider-jfrog-project/internal/controller/namespaced/project/user"
+	providerconfig "github.com/mikegio27/provider-jfrog-project/internal/controller/namespaced/providerconfig"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to
 // the supplied manager.
 func Setup(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
-		resource.Setup,
+		environment.Setup,
+		group.Setup,
+		project.Setup,
+		repository.Setup,
+		role.Setup,
+		sharerepository.Setup,
+		sharerepositorywithall.Setup,
+		user.Setup,
 		providerconfig.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
@@ -31,7 +45,14 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 // the supplied manager gated.
 func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 	for _, setup := range []func(ctrl.Manager, controller.Options) error{
-		resource.SetupGated,
+		environment.SetupGated,
+		group.SetupGated,
+		project.SetupGated,
+		repository.SetupGated,
+		role.SetupGated,
+		sharerepository.SetupGated,
+		sharerepositorywithall.SetupGated,
+		user.SetupGated,
 		providerconfig.SetupGated,
 	} {
 		if err := setup(mgr, o); err != nil {

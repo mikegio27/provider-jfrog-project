@@ -1,0 +1,15 @@
+apiVersion: project.jfrog.com/v1alpha1
+kind: User
+metadata:
+  annotations:
+    meta.upbound.io/example-id: project/v1alpha1/user
+  labels:
+    testing.upbound.io/example-name: myuser
+  name: myuser
+spec:
+  forProvider:
+    projectKeySelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
+    roles:
+    - Viewer

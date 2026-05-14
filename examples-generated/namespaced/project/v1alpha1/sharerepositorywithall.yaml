@@ -1,0 +1,11 @@
+apiVersion: project.m.jfrog.com/v1alpha1
+kind: ShareRepositoryWithAll
+metadata:
+  annotations:
+    meta.upbound.io/example-id: project/v1alpha1/sharerepositorywithall
+  labels:
+    testing.upbound.io/example-name: myprojectsharerepo
+  name: myprojectsharerepo
+  namespace: crossplane-system
+spec:
+  forProvider: {}

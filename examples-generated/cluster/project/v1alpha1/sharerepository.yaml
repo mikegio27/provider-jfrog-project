@@ -1,0 +1,13 @@
+apiVersion: project.jfrog.com/v1alpha1
+kind: ShareRepository
+metadata:
+  annotations:
+    meta.upbound.io/example-id: project/v1alpha1/sharerepository
+  labels:
+    testing.upbound.io/example-name: myprojectsharerepo
+  name: myprojectsharerepo
+spec:
+  forProvider:
+    targetProjectKeySelector:
+      matchLabels:
+        testing.upbound.io/example-name: example
