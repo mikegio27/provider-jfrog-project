@@ -1,4 +1,4 @@
-apiVersion: jfrog-project.m.crossplane.io/v1beta1
+apiVersion: jfrogproject.m.jfrog.com/v1beta1
 kind: ClusterProviderConfig
 metadata:
   name: default

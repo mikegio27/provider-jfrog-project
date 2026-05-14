@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	resourcePrefix = "jfrog-project"
+	resourcePrefix = "jfrogproject"
 	modulePath     = "github.com/mikegio27/provider-jfrog-project"
 )
 

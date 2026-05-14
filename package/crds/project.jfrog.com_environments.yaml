@@ -11,7 +11,7 @@ spec:
     categories:
     - crossplane
     - managed
-    - jfrog-project
+    - jfrogproject
     kind: Environment
     listKind: EnvironmentList
     plural: environments
