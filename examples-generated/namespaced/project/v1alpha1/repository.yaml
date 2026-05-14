@@ -9,6 +9,4 @@ metadata:
   namespace: crossplane-system
 spec:
   forProvider:
-    projectKeySelector:
-      matchLabels:
-        testing.upbound.io/example-name: example
+    projectKey: myproj

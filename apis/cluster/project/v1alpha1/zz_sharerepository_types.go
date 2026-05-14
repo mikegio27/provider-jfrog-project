@@ -47,17 +47,8 @@ type ShareRepositoryParameters struct {
 
 	// (String) The project key to which the repository should be shared with.
 	// The project key to which the repository should be shared with.
-	// +crossplane:generate:reference:type=github.com/mikegio27/provider-jfrog-project/apis/cluster/project/v1alpha1.Project
-	// +kubebuilder:validation:Optional
-	TargetProjectKey *string `json:"targetProjectKey,omitempty" tf:"target_project_key,omitempty"`
-
-	// Reference to a Project in project to populate targetProjectKey.
-	// +kubebuilder:validation:Optional
-	TargetProjectKeyRef *v1.Reference `json:"targetProjectKeyRef,omitempty" tf:"-"`
-
-	// Selector for a Project in project to populate targetProjectKey.
-	// +kubebuilder:validation:Optional
-	TargetProjectKeySelector *v1.Selector `json:"targetProjectKeySelector,omitempty" tf:"-"`
+	// +kubebuilder:validation:Required
+	TargetProjectKey *string `json:"targetProjectKey" tf:"target_project_key,omitempty"`
 }
 
 // ShareRepositorySpec defines the desired state of ShareRepository

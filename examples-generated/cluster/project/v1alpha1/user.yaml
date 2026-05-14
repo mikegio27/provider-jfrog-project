@@ -8,8 +8,6 @@ metadata:
   name: myuser
 spec:
   forProvider:
-    projectKeySelector:
-      matchLabels:
-        testing.upbound.io/example-name: example
+    projectKey: myproj
     roles:
     - Viewer

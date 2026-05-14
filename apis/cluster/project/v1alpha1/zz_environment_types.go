@@ -30,17 +30,8 @@ type EnvironmentParameters struct {
 
 	// 32 lowercase alphanumeric and hyphen characters. Must begin with a letter.
 	// Project key for this environment. This field supports only 2 - 32 lowercase alphanumeric and hyphen characters. Must begin with a letter.
-	// +crossplane:generate:reference:type=github.com/mikegio27/provider-jfrog-project/apis/cluster/project/v1alpha1.Project
-	// +kubebuilder:validation:Optional
-	ProjectKey *string `json:"projectKey,omitempty" tf:"project_key,omitempty"`
-
-	// Reference to a Project in project to populate projectKey.
-	// +kubebuilder:validation:Optional
-	ProjectKeyRef *v1.Reference `json:"projectKeyRef,omitempty" tf:"-"`
-
-	// Selector for a Project in project to populate projectKey.
-	// +kubebuilder:validation:Optional
-	ProjectKeySelector *v1.Selector `json:"projectKeySelector,omitempty" tf:"-"`
+	// +kubebuilder:validation:Required
+	ProjectKey *string `json:"projectKey" tf:"project_key,omitempty"`
 }
 
 // EnvironmentSpec defines the desired state of Environment

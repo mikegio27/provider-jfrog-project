@@ -14,7 +14,7 @@ import (
 	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
 )
 
-type GroupInitParameters_2 struct {
+type GroupInitParameters struct {
 
 	// defined Project or custom roles. Must have at least 1 role, e.g. 'Viewer'
 	// List of pre-defined Project or custom roles. Must have at least 1 role, e.g. 'Viewer'
@@ -22,7 +22,7 @@ type GroupInitParameters_2 struct {
 	Roles []*string `json:"roles,omitempty" tf:"roles,omitempty"`
 }
 
-type GroupObservation_2 struct {
+type GroupObservation struct {
 
 	// (String) The ID of this resource.
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
@@ -37,21 +37,12 @@ type GroupObservation_2 struct {
 	Roles []*string `json:"roles,omitempty" tf:"roles,omitempty"`
 }
 
-type GroupParameters_2 struct {
+type GroupParameters struct {
 
 	// (String) The key of the project to which the group should be assigned to.
 	// The key of the project to which the group should be assigned to.
-	// +crossplane:generate:reference:type=github.com/mikegio27/provider-jfrog-project/apis/namespaced/project/v1alpha1.Project
-	// +kubebuilder:validation:Optional
-	ProjectKey *string `json:"projectKey,omitempty" tf:"project_key,omitempty"`
-
-	// Reference to a Project in project to populate projectKey.
-	// +kubebuilder:validation:Optional
-	ProjectKeyRef *v1.NamespacedReference `json:"projectKeyRef,omitempty" tf:"-"`
-
-	// Selector for a Project in project to populate projectKey.
-	// +kubebuilder:validation:Optional
-	ProjectKeySelector *v1.NamespacedSelector `json:"projectKeySelector,omitempty" tf:"-"`
+	// +kubebuilder:validation:Required
+	ProjectKey *string `json:"projectKey" tf:"project_key,omitempty"`
 
 	// defined Project or custom roles. Must have at least 1 role, e.g. 'Viewer'
 	// List of pre-defined Project or custom roles. Must have at least 1 role, e.g. 'Viewer'
@@ -63,7 +54,7 @@ type GroupParameters_2 struct {
 // GroupSpec defines the desired state of Group
 type GroupSpec struct {
 	v2.ManagedResourceSpec `json:",inline"`
-	ForProvider            GroupParameters_2 `json:"forProvider"`
+	ForProvider            GroupParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -74,13 +65,13 @@ type GroupSpec struct {
 	// required on creation, but we do not desire to update them after creation,
 	// for example because of an external controller is managing them, like an
 	// autoscaler.
-	InitProvider GroupInitParameters_2 `json:"initProvider,omitempty"`
+	InitProvider GroupInitParameters `json:"initProvider,omitempty"`
 }
 
 // GroupStatus defines the observed state of Group.
 type GroupStatus struct {
 	v1.ResourceStatus `json:",inline"`
-	AtProvider        GroupObservation_2 `json:"atProvider,omitempty"`
+	AtProvider        GroupObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
