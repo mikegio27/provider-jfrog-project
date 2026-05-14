@@ -1,6 +1,8 @@
 /.cache
 /.work
 /_output
+/generator
+/provider
 cover.out
 /vendor
 /.vendor-new
