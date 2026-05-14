@@ -13,17 +13,17 @@ on:
         required: false
 
 jobs:
-  publish-provider-package:
-    uses: crossplane-contrib/provider-workflows/.github/workflows/publish-provider.yml@451c4dc6ad3691b0a702a997a0ac24e8bbc8bbaa # main
-    with:
-      repository: provider-jfrog-project
-      version: ${{ github.event.inputs.version }}
-      go-version: ${{ github.event.inputs.go-version }}
-      cleanup-disk: true
-    secrets:
-      GHCR_PAT: ${{ secrets.GITHUB_TOKEN }}
-      XPKG_MIRROR_TOKEN: ${{ secrets.XPKG_MIRROR_TOKEN }}
-      XPKG_MIRROR_ACCESS_ID: ${{ secrets.XPKG_MIRROR_ACCESS_ID }}
+  # publish-provider-package:
+  #   uses: crossplane-contrib/provider-workflows/.github/workflows/publish-provider.yml@451c4dc6ad3691b0a702a997a0ac24e8bbc8bbaa # main
+  #   with:
+  #     repository: provider-jfrog-project
+  #     version: ${{ github.event.inputs.version }}
+  #     go-version: ${{ github.event.inputs.go-version }}
+  #     cleanup-disk: true
+  #   secrets:
+  #     GHCR_PAT: ${{ secrets.GITHUB_TOKEN }}
+  #     XPKG_MIRROR_TOKEN: ${{ secrets.XPKG_MIRROR_TOKEN }}
+  #     XPKG_MIRROR_ACCESS_ID: ${{ secrets.XPKG_MIRROR_ACCESS_ID }}
 
   publish-ghcr:
     runs-on: ubuntu-latest
@@ -60,4 +60,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push xpkg
-        run: make xpkg.push VERSION=${{ github.event.inputs.version }} XPKG_REG_ORGS=ghcr.io/mikegio27
+        run: make publish.artifacts VERSION=${{ github.event.inputs.version }} XPKG_REG_ORGS=ghcr.io/mikegio27
